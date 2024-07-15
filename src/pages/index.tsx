@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Inter } from "next/font/google";
 import styles from "@/styles/Home.module.css";
 
+import variables from '@/styles/variable.module.scss';
+
 const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
@@ -16,7 +18,7 @@ export default function Home() {
       </Head>
       <main className={`${styles.main} ${inter.className}`}>
         <div className={styles.description}>
-          <p>
+          <p style={{ color: variables.primaryColor }}>
             Get started by editing&nbsp;
             <code className={styles.code}>src/pages/index.tsx</code>
           </p>
