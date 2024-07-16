@@ -1,0 +1,38 @@
+@use './variable.module.scss' as *;
+
+.navbar {
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: transparent; 
+  color: #fff;
+
+  .navLink {
+    color: black;
+    text-decoration: none;
+    margin-right: 2.5rem;
+  }
+
+  .navLinkBis {
+    color: #fff;
+    text-decoration: none;
+    margin-right: 1rem;
+    background: $primary-color;
+    padding: 5px 20px 5px 20px;
+    border-radius: 20px;
+}
+  
+  .left {
+    display: flex;
+    align-items: center;
+    margin-left: 5%;
+  }
+  
+  .right {
+    display: flex;
+    align-items: center;
+  }
+  
+}
