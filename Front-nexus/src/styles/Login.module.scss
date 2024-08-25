@@ -1,0 +1,70 @@
+@use "./variable.module.scss" as *;
+
+[data-theme='dark'] {
+  @import './variable-dark.module.scss';
+  
+}
+
+.container {
+  display: flex;
+  justify-content: end;
+  height: 100vh;
+}
+
+.titleBox {
+  display: block;
+
+  .imgDoctor{
+    height: 500px;
+  }
+}
+
+.loginBox {
+  width: 45%;
+  padding: 20px;
+  background-color: $background;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  .title {
+    text-align: center;
+  }
+
+  .formGroup {
+    margin-bottom: 15px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      box-sizing: border-box;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+      transition: border-color 0.3s, box-shadow 0.3s;
+
+      &:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none;
+      }
+    }
+  }
+
+  .button {
+    width: 100%;
+    padding: 10px;
+    background-color: $primaryColor;
+    color: $textColor;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $primaryColor;
+    }
+  }
+}

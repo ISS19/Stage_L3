@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Aid-nexus</string>
+    <string name="title_activity_main">Aid-nexus</string>
+    <string name="package_name">com.aid.nexus</string>
+    <string name="custom_url_scheme">com.aid.nexus</string>
+</resources>

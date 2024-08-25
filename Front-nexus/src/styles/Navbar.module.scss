@@ -1,0 +1,84 @@
+@use "./variable.module.scss" as *;
+
+[data-theme="dark"] {
+  @import "./variable-dark.module.scss";
+
+  .navbar {
+    display: flex;
+    font-weight: bold;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2rem;
+    background-color: transparent;
+    color: $background;
+
+    .navLink {
+      color: $textColor;
+      text-decoration: none;
+      margin-right: 2.5rem;
+    }
+
+    .navLinkBis {
+      color: $background;
+      text-decoration: none;
+      margin-right: 1rem;
+      background: $primaryColor;
+      padding: 5px 20px 5px 20px;
+      border-radius: 20px;
+    }
+  }
+
+  .themeToggle {
+    background-color: $toglleButton;
+  }
+}
+
+.navbar {
+  display: flex;
+  font-weight: bold;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem;
+  background-color: transparent;
+  color: $background;
+
+  .navLink {
+    color: $textColor;
+    text-decoration: none;
+    margin-right: 2.5rem;
+  }
+
+  .navLinkBis {
+    color: $background;
+    transition: 0.5s;
+    text-decoration: none;
+    margin-right: 1rem;
+    background: $primaryColor;
+    padding: 5px 20px 5px 20px;
+    border-radius: 20px;
+  }
+
+  .left {
+    display: flex;
+    align-items: center;
+    margin-left: 5%;
+  }
+
+  .right {
+    display: flex;
+    align-items: center;
+  }
+}
+
+.themeToggle {
+  position: fixed;
+  transition: 0.5s;
+  bottom: 1rem;
+  left: 1rem;
+  background-color: $toglleButton;
+  border: none;
+  border-radius: 50%;
+  padding: 0.5rem;
+  cursor: pointer;
+  z-index: 1000;
+}

@@ -1,0 +1,37 @@
+{
+  "name": "stage_l3",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.1.1",
+    "@capacitor/cli": "^6.1.1",
+    "@capacitor/core": "^6.1.1",
+    "@gsap/react": "^2.1.1",
+    "@splinetool/react-spline": "^4.0.0",
+    "@tsparticles/react": "^3.0.0",
+    "@types/react-transition-group": "^4.4.10",
+    "framer-motion": "^11.3.4",
+    "gsap": "^3.12.5",
+    "next": "14.2.5",
+    "react": "^18",
+    "react-dom": "^18",
+    "react-transition-group": "^4.4.5",
+    "stage_l3": "file:",
+    "tsparticles": "^3.5.0",
+    "tsparticles-engine": "^2.12.0",
+    "typewriter-effect": "^2.21.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "sass": "^1.77.8",
+    "typescript": "^5"
+  }
+}

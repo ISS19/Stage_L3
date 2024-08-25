@@ -1,0 +1,93 @@
+@use "./variable.module.scss" as *;
+
+[data-theme="dark"] {
+  @import "./variable-dark.module.scss";
+
+  .splineTitle {
+    color: $textColor;
+    width: 30%;
+    margin-left: 6%;
+    margin-top: 7%;
+    h1{
+      color: $textColor;
+    }
+  }
+
+  .navLinkBis {
+    color: $background;
+    background: $primaryColor;
+
+    .syringe_white {
+      display: none;
+    }
+    .syringe_blue {
+      display: block;
+    }
+  }
+}
+
+[data-theme="light"] {
+  .splineTitle {
+    color: $textColor;
+    width: 30%;
+    margin-left: 6%;
+    margin-top: 7%;
+  }
+
+  .navLinkBis {
+    color: $background;
+    background: $primaryColor;
+
+    .syringe_blue {
+      display: none;
+    }
+    .syringe_white {
+      display: block;
+    }
+  }
+}
+
+.splineContainer {
+  position: relative;
+  width: 100%;
+  display: flex;
+}
+
+.spline {
+  position: absolute;
+  margin-left: 20%;
+  z-index: 1;
+}
+
+.splineTitle {
+  color: $textColor;
+  width: 30%;
+  margin-left: 6%;
+  margin-top: 7%;
+  h1{
+    color: #24253F;
+  }
+}
+
+.navLinkBis {
+  color: $background;
+  width: 20%;
+  font-weight: bold;
+  position: relative;
+  transition: 0.5s;
+  text-decoration: none;
+  margin-right: 1rem;
+  background: $primaryColor;
+  padding: 5px 20px;
+  border-radius: 20px;
+  display: flex;  
+
+  .syringe_blue,
+  .syringe_white {
+    margin-left: 6%;
+    margin-top: 3%;
+    transition: .5s;
+    width: 20px;
+    height: 20px;
+}
+}
