@@ -9,7 +9,7 @@
     width: 30%;
     margin-left: 6%;
     margin-top: 7%;
-    
+
     h1 {
       color: $textColor;
     }
@@ -36,7 +36,7 @@
     width: 30%;
     margin-left: 6%;
     margin-top: 7%;
-    
+
     @include mobile {
       width: 90%;
       margin-left: 5%;
@@ -50,13 +50,6 @@
   .navLinkBis {
     color: $background;
     background: $primaryColor;
-
-    .syringe_blue {
-      display: none;
-    }
-    .syringe_white {
-      display: block;
-    }
   }
 }
 
@@ -91,7 +84,7 @@
   margin-top: 7%;
 
   h1 {
-    color: #24253F;
+    color: #24253f;
   }
 
   @include mobile {
@@ -106,22 +99,21 @@
 
 .navLinkBis {
   color: $background;
+  background: $primaryColor;
   width: fit-content;
   font-weight: bold;
   position: relative;
   align-items: center;
   justify-content: center;
-  transition: 0.5s;
+  transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
   text-decoration: none;
   margin-right: 1rem;
-  background: $primaryColor;
   padding: 5px 20px;
   border-radius: 20px;
-  display: flex;
 
   @include mobile {
-    width: 80%;
-    padding: 10px 15px;
+    width: fit-content;
+    padding: 5px 20px;
     margin: 1rem auto;
   }
 }
@@ -145,4 +137,3 @@
     }
   }
 }
-

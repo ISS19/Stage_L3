@@ -13,6 +13,8 @@
     "@capacitor/cli": "^6.1.1",
     "@capacitor/core": "^6.1.1",
     "@gsap/react": "^2.1.1",
+    "@react-three/drei": "^9.111.5",
+    "@react-three/fiber": "^8.17.6",
     "@splinetool/react-spline": "^4.0.0",
     "@tsparticles/react": "^3.0.0",
     "@types/react-transition-group": "^4.4.10",
@@ -22,8 +24,10 @@
     "react": "^18",
     "react-dom": "^18",
     "react-responsive-carousel": "^3.2.23",
+    "react-simple-typewriter": "^5.0.1",
     "react-transition-group": "^4.4.5",
     "stage_l3": "file:",
+    "three": "^0.168.0",
     "tsparticles": "^3.5.0",
     "tsparticles-engine": "^2.12.0",
     "typewriter-effect": "^2.21.0"
@@ -32,6 +36,7 @@
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/three": "^0.168.0",
     "sass": "^1.77.8",
     "typescript": "^5"
   }

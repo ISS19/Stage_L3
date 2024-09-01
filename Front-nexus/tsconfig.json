@@ -16,6 +16,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/Shared/Particles.js", "src/pages/index.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/components/Shared/Particles.js", "src/pages/index.js", "src/components/3d/ThreeDModel .jsx"],
   "exclude": ["node_modules"]
 }
