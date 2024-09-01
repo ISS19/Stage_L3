@@ -1,4 +1,5 @@
 @use "./variable.module.scss" as *;
+@use "./mixins" as *;
 
 [data-theme="dark"] {
   @import "./variable-dark.module.scss";
@@ -8,21 +9,24 @@
     width: 30%;
     margin-left: 6%;
     margin-top: 7%;
-    h1{
+    
+    h1 {
       color: $textColor;
+    }
+
+    @include mobile {
+      width: 90%;
+      margin-left: 5%;
+      margin-top: 10%;
+      h1 {
+        font-size: 1.5rem;
+      }
     }
   }
 
   .navLinkBis {
     color: $background;
     background: $primaryColor;
-
-    .syringe_white {
-      display: none;
-    }
-    .syringe_blue {
-      display: block;
-    }
   }
 }
 
@@ -32,6 +36,15 @@
     width: 30%;
     margin-left: 6%;
     margin-top: 7%;
+    
+    @include mobile {
+      width: 90%;
+      margin-left: 5%;
+      margin-top: 10%;
+      h1 {
+        font-size: 1.5rem;
+      }
+    }
   }
 
   .navLinkBis {
@@ -48,15 +61,27 @@
 }
 
 .splineContainer {
-  position: relative;
   width: 100%;
   display: flex;
+
+  @include mobile {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 }
 
 .spline {
   position: absolute;
-  margin-left: 25%;
+  margin-left: 30%;
   z-index: 1;
+
+  @include mobile {
+    position: relative;
+    margin-left: 0;
+    width: 90%;
+    height: auto;
+  }
 }
 
 .splineTitle {
@@ -64,30 +89,60 @@
   width: 30%;
   margin-left: 6%;
   margin-top: 7%;
-  h1{
+
+  h1 {
     color: #24253F;
+  }
+
+  @include mobile {
+    width: 90%;
+    margin-left: 5%;
+    margin-top: 10%;
+    h1 {
+      font-size: 1.5rem;
+    }
   }
 }
 
 .navLinkBis {
   color: $background;
-  width: 20%;
+  width: fit-content;
   font-weight: bold;
   position: relative;
+  align-items: center;
+  justify-content: center;
   transition: 0.5s;
   text-decoration: none;
   margin-right: 1rem;
   background: $primaryColor;
   padding: 5px 20px;
   border-radius: 20px;
-  display: flex;  
+  display: flex;
 
-  .syringe_blue,
-  .syringe_white {
-    margin-left: 6%;
-    margin-top: 3%;
-    transition: .5s;
-    width: 20px;
-    height: 20px;
+  @include mobile {
+    width: 80%;
+    padding: 10px 15px;
+    margin: 1rem auto;
+  }
 }
+
+.footer {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
+  position: fixed;
+  bottom: 0;
+
+  p {
+    margin: 0;
+    font-size: 0.875rem;
+  }
+
+  @include mobile {
+    padding: 15px;
+    p {
+      font-size: 0.75rem;
+    }
+  }
 }
+

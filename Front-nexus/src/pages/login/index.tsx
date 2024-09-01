@@ -56,6 +56,7 @@ function Login() {
           alt="Doctor"
           className={`${styles.imgDoctor} ${styles.mobile}`}
         />
+        <br />
 
         <footer className={styles.footer}>
           <p>&copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.</p>

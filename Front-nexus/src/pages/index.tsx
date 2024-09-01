@@ -45,17 +45,19 @@ function Home() {
                 dolores illum. Obcaecati repellat accusantium commodi rem
                 quaerat repudiandae qui nesciunt cumque, voluptates illum.
               </p>
-              <br /><br />
+              <br />
+              <br />
               <Link href="/consulter" className={styles.navLinkBis}>
                 Consulter
-                <img src="/syringe_100px.png" className={styles.syringe_blue} alt="" />
-                <img src="/syringe_white.png" className={styles.syringe_white} alt="" />
               </Link>
             </div>
             <div className={styles.spline}>
               <Spline scene="https://prod.spline.design/PC0J5Pstikht04IE/scene.splinecode" />
             </div>
           </div>
+          <footer className={styles.footer}>
+            <p>&copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.</p>
+          </footer>
         </>
       )}
     </>
