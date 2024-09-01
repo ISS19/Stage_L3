@@ -21,6 +21,7 @@
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
+    "react-responsive-carousel": "^3.2.23",
     "react-transition-group": "^4.4.5",
     "stage_l3": "file:",
     "tsparticles": "^3.5.0",

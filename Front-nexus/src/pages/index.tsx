@@ -46,7 +46,7 @@ function Home() {
                 quaerat repudiandae qui nesciunt cumque, voluptates illum.
               </p>
               <br /><br />
-              <Link href="/signup" className={styles.navLinkBis}>
+              <Link href="/consulter" className={styles.navLinkBis}>
                 Consulter
                 <img src="/syringe_100px.png" className={styles.syringe_blue} alt="" />
                 <img src="/syringe_white.png" className={styles.syringe_white} alt="" />
