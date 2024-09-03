@@ -35,7 +35,7 @@ class AIModel:
             diets = self.db["diets"].find({"Disease": disease_name})
             medications = self.db["medications"].find({"Disease": disease_name})
             precautions = self.db["precautions_df"].find({"Disease": disease_name})
-            symptoms = self.db["symptoms_df"].find({"Disease": disease_name})
+            """ symptoms = self.db["symptoms_df"].find({"Disease": disease_name}) """
             workout = self.db["workout_df"].find({"Disease": disease_name})
 
             # Include translated disease name in the response
@@ -46,7 +46,6 @@ class AIModel:
                 "diets": [self.serialize_doc(doc) for doc in diets],
                 "medications": [self.serialize_doc(doc) for doc in medications],
                 "precautions": [self.serialize_doc(doc) for doc in precautions],
-                "symptoms": [self.serialize_doc(doc) for doc in symptoms],
                 "workout": [self.serialize_doc(doc) for doc in workout]
             }
 

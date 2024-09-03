@@ -5,10 +5,10 @@ export function ThreeDModel(props) {
   const group = useRef();
   const { nodes, materials, animations } = useGLTF('/face.glb');
   const { actions } = useAnimations(animations, group);
-  const [scale, setScale] = useState(12.393); // Default scale
+  const [scale, setScale] = useState(12.393); 
 
   useEffect(() => {
-    // Play the first animation found
+
     if (actions && Object.keys(actions).length > 0) {
       const action = actions[Object.keys(actions)[0]];
       action.play();
@@ -16,24 +16,21 @@ export function ThreeDModel(props) {
   }, [actions]);
 
   useEffect(() => {
-    // Function to update scale based on screen size
+
     const updateScale = () => {
-      if (window.innerWidth <= 768) { // Mobile view
-        setScale(10); // Adjust the scale for mobile
-      } else if (window.innerWidth <= 1200) { // Tablet view
-        setScale(10); // Adjust the scale for tablet
+      if (window.innerWidth <= 768) { 
+        setScale(10); 
+      } else if (window.innerWidth <= 1200) { 
+        setScale(10); 
       } else {
-        setScale(12.393); // Default scale for desktop
+        setScale(12.393); 
       }
     };
 
-    // Add event listener on window resize
     window.addEventListener('resize', updateScale);
 
-    // Call the function initially
     updateScale();
 
-    // Cleanup event listener on component unmount
     return () => window.removeEventListener('resize', updateScale);
   }, []);
 
@@ -43,7 +40,7 @@ export function ThreeDModel(props) {
         <group
           name="Sketchfab_model"
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={scale} // Apply the responsive scale
+          scale={scale} 
         >
           <group name="root">
             <group name="GLTF_SceneRootNode" rotation={[Math.PI / 2, 0, 0]}>
