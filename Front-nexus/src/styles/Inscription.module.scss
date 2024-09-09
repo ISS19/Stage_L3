@@ -1,0 +1,160 @@
+@use "./variable.module.scss" as *;
+@use "./mixins" as *;
+
+[data-theme="dark"] {
+  @import "./variable-dark.module.scss";
+}
+
+.container {
+  display: flex;
+  justify-content: end;
+  height: 98vh;
+
+  @include mobile {
+    justify-content: center;
+    padding: 20px;
+    flex-direction: column;
+  }
+}
+
+.titleBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  height: 100%;
+  margin-right: 15%;
+
+  .imgDoctor {
+    height: 500px;
+
+    @include mobile {
+      height: 250px;
+    }
+  }
+
+  .title {
+    margin-bottom: 20px;
+  }
+
+  @include mobile {
+    display: none;
+  }
+}
+
+.loginBox {
+  width: 45%;
+  padding: 20px;
+  background-color: $background;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
+  .title {
+    text-align: center;
+  }
+
+  .formGroup {
+    margin-bottom: 4%;
+    margin-left: 14%;
+    width: 75%;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input,
+    .button {
+      width: 100%;
+      padding: 13px;
+      font-size: 15px;
+      background-color: #f1f1f1;
+      border: none;
+      border-radius: 7px;
+      box-sizing: border-box;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input {
+      background-color: #f1f1f1;
+
+      &:focus {
+        border-color: $primaryColor;
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        outline: none;
+      }
+    }
+
+    .button {
+      color: #fefefe;
+      background-color: #24253f;
+      cursor: pointer;
+      transition: 0.3s;
+
+      &:hover {
+        background-color: $primaryColor;
+      }
+    }
+  }
+
+  .imgDoctor {
+    display: none;
+
+    &.mobile {
+      display: none;
+
+      @include mobile {
+        display: block;
+        height: 150px;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 80%;
+      }
+    }
+  }
+
+  .rememberAndForgot {
+    display: flex;
+    justify-content: space-between;
+
+    .rememberMe {
+      display: flex;
+    }
+
+    input[type="checkbox"] {
+      margin-right: 10px;
+      width: 14px;
+      height: 14px;
+    }
+
+    label {
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .forgotPassword {
+      font-size: 14px;
+      color: $primaryColor;
+      text-decoration: none;
+      cursor: pointer;
+      margin-left: auto;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  @include mobile {
+    width: 100%;
+    height: 90vh;
+    padding: 10px;
+  }
+
+  .footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 10px;
+  }
+}

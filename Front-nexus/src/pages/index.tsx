@@ -43,7 +43,9 @@ function Home() {
               <h1>AID-NEXUS</h1>
               <p>
                 <Typewriter
-                  words={["Bienvenue sur notre plateforme de soin intelligente, conçue pour révolutionner votre accès à la santé. Grâce à notre intelligence artificielle, vous pouvez obtenir des conseils de santé personnalisés en quelques secondes. Analysez vos symptômes facilement avec notre docteur virtuel, disponible 24/7 pour répondre rapidement à vos questions de santé."]}
+                  words={[
+                    "Bienvenue sur notre plateforme de soin intelligente, conçue pour révolutionner votre accès à la santé. Grâce à notre intelligence artificielle, vous pouvez obtenir des conseils de santé personnalisés en quelques secondes. Analysez vos symptômes facilement avec notre docteur virtuel, disponible 24/7 pour répondre rapidement à vos questions de santé.",
+                  ]}
                   cursor
                   loop={true}
                   cursorStyle="_"
@@ -64,7 +66,7 @@ function Home() {
               )}
             </div>
             <div className={styles.spline}>
-              <Spline scene="https://prod.spline.design/PC0J5Pstikht04IE/scene.splinecode" />
+              <Spline scene="https://prod.spline.design/DvTcNWANHXavJ4vN/scene.splinecode" />
             </div>
           </div>
           <footer className={styles.footer}>

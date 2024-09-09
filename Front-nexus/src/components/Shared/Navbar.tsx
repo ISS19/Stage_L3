@@ -6,6 +6,7 @@ const Navbar = () => {
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
+        <img src="/aid-logo.png" alt="" className={styles.logo} />
         <Link href="/" className={styles.navLink}>
           Accueil
         </Link>
