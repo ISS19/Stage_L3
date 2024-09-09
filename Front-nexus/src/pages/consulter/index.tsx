@@ -1,27 +1,31 @@
-"use client";
-import { ThreeDModel } from "@/components/3d/ThreeDModel "; 
-import {
-  Environment,
-  PerspectiveCamera,
-} from "@react-three/drei";
+import { useEffect, useState } from "react";
+import { ThreeDModel } from "@/components/3d/ThreeDModel ";
+import { Environment, PerspectiveCamera } from "@react-three/drei";
 import { Canvas } from "@react-three/fiber";
 import styles from "@/styles/Consulter.module.scss";
 import TypewriterWithVoice from "@/components/TypewriterWithVoice";
-import { useEffect, useState } from "react";
 import AIService from "@/services/AIService";
+import { useRouter } from "next/router";
 
 const HomePage = () => {
   const [voice, setVoice] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [animationComplete, setAnimationComplete] = useState(false);
 
   const [symptome1, setSymptome1] = useState<string | undefined>();
   const [symptome2, setSymptome2] = useState<string | undefined>();
   const [symptome3, setSymptome3] = useState<string | undefined>();
   const [symptome4, setSymptome4] = useState<string | undefined>();
 
+  const router = useRouter();
+
   const [diseaseDescriptions, setDiseaseDescriptions] = useState<{
     [key: string]: string;
   }>({});
+
+  const concatenatedDescriptions = Object.entries(diseaseDescriptions)
+    .map(([disease, description]) => `${disease}: ${description}`)
+    .join("\n");
 
   const handleSymptomeChange =
     (setter: React.Dispatch<React.SetStateAction<string | undefined>>) =>
@@ -29,13 +33,13 @@ const HomePage = () => {
       setter(e.target.value);
     };
 
-  const handleSendSymptoms = async () => {
+  async function handleSendSymptoms() {
     const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(
       Boolean
     ) as string[];
-
     setVoice(false);
     setLoading(true);
+    setAnimationComplete(false);
     try {
       const res = await AIService.getDiseasePrecaution(symptoms);
       const fetchedPrecaution = res.data.data[0];
@@ -55,7 +59,7 @@ const HomePage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   useEffect(() => {
     if (diseaseDescriptions) {
@@ -63,17 +67,12 @@ const HomePage = () => {
     }
   }, [diseaseDescriptions]);
 
-  // Concatenate all descriptions into a single string
-  const concatenatedDescriptions = Object.entries(diseaseDescriptions)
-    .map(([disease, description]) => `${disease}: ${description}`)
-    .join('\n');
-
   return (
     <div className={styles.container}>
       <header className={styles.header}>
         <nav>
-          <button>Docteur</button>
-          <button>Carte</button>
+          <button onClick={() => router.push("/consulter")}>Docteur</button>
+          <button onClick={() => router.push("/carte")}>Carte</button>
         </nav>
       </header>
       <main className={styles.main}>
@@ -110,12 +109,19 @@ const HomePage = () => {
           <Canvas>
             <PerspectiveCamera makeDefault position={[0, 0, 5]} />
             <Environment preset="studio" />
-            <ThreeDModel />
+            <ThreeDModel
+              voice={voice}
+              concatenatedDescriptions={concatenatedDescriptions}
+              animationComplete={animationComplete}
+            />
           </Canvas>
         </div>
         <div className={styles.rightPanel}>
           {voice && concatenatedDescriptions && (
-            <TypewriterWithVoice text={concatenatedDescriptions} />
+            <TypewriterWithVoice
+              text={concatenatedDescriptions}
+              onComplete={() => setAnimationComplete(true)}
+            />
           )}
           <button>Save</button>
           <button>Download</button>

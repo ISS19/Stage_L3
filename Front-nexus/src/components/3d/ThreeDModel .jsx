@@ -1,38 +1,44 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useGLTF, useAnimations } from '@react-three/drei';
 
-export function ThreeDModel(props) {
+export function ThreeDModel({ voice, concatenatedDescriptions, animationComplete , ...props }) {
   const group = useRef();
   const { nodes, materials, animations } = useGLTF('/face.glb');
   const { actions } = useAnimations(animations, group);
-  const [scale, setScale] = useState(12.393); 
+  const [scale, setScale] = useState(12.393);
 
   useEffect(() => {
-
-    if (actions && Object.keys(actions).length > 0) {
+    // Play animation only when both voice and concatenatedDescriptions are true
+    if (voice && concatenatedDescriptions && actions && Object.keys(actions).length > 0) {
       const action = actions[Object.keys(actions)[0]];
       action.play();
+    } else {
+      // Stop animation if the conditions are not met
+      Object.values(actions).forEach(action => action.stop());
     }
-  }, [actions]);
+  }, [actions, voice, concatenatedDescriptions]);
 
   useEffect(() => {
-
     const updateScale = () => {
-      if (window.innerWidth <= 768) { 
-        setScale(10); 
-      } else if (window.innerWidth <= 1200) { 
-        setScale(10); 
+      if (window.innerWidth <= 768) {
+        setScale(10);
+      } else if (window.innerWidth <= 1200) {
+        setScale(10);
       } else {
-        setScale(12.393); 
+        setScale(12.393);
       }
     };
 
+    if (animationComplete && actions && Object.keys(actions).length > 0) {
+      const action = actions[Object.keys(actions)[0]];
+      action.paused = true;  // Correctly pause the action by setting its paused property to true
+    }
+    
     window.addEventListener('resize', updateScale);
-
     updateScale();
 
     return () => window.removeEventListener('resize', updateScale);
-  }, []);
+  }, [animationComplete]);
 
   return (
     <group ref={group} {...props} dispose={null}>
@@ -40,7 +46,7 @@ export function ThreeDModel(props) {
         <group
           name="Sketchfab_model"
           rotation={[-Math.PI / 2, 0, 0]}
-          scale={scale} 
+          scale={scale}
         >
           <group name="root">
             <group name="GLTF_SceneRootNode" rotation={[Math.PI / 2, 0, 0]}>

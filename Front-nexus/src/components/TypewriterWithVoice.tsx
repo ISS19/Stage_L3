@@ -1,19 +1,17 @@
 import React, { useState, useEffect } from 'react';
 
-const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1 }) => {
+const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onComplete }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [index, setIndex] = useState(0);
   const [utterance, setUtterance] = useState(null);
   const [speechStarted, setSpeechStarted] = useState(false);
 
   useEffect(() => {
-    // Initialize the speech synthesis utterance
     const speech = new SpeechSynthesisUtterance();
-    speech.rate = rate; // Vitesse de la parole
-    speech.pitch = pitch; // Hauteur de la parole
-    speech.volume = volume; // Volume de la parole
+    speech.rate = rate;
+    speech.pitch = pitch;
+    speech.volume = volume;
 
-    // Déclenchement lorsque la voix commence à parler
     speech.onstart = () => {
       setSpeechStarted(true);
     };
@@ -21,7 +19,6 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1 }) => 
     setUtterance(speech);
 
     return () => {
-      // Nettoyage: annuler la parole en cours si le composant se démonte
       window.speechSynthesis.cancel();
     };
   }, [rate, pitch, volume]);
@@ -33,17 +30,21 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1 }) => 
       const nextChar = text[index];
       setDisplayedText((prev) => prev + nextChar);
       setIndex((prev) => prev + 1);
-    }, 75); // Vitesse du typewriter
+    }, 62);
+
+    // Call onComplete when the typewriter reaches the end of the text
+    if (index === text.length - 1 && onComplete) {
+      onComplete();
+    }
 
     return () => clearTimeout(timeout);
-  }, [text, index, displayedText, speechStarted]);
+  }, [text, index, displayedText, speechStarted, onComplete]);
 
   useEffect(() => {
-    // Démarre la synthèse vocale dès que le composant est prêt
     if (utterance && text) {
-      utterance.text = text; // Mettre tout le texte à lire d'un coup
-      window.speechSynthesis.cancel(); // Arrête la parole précédente (au cas où)
-      window.speechSynthesis.speak(utterance); // Commence la parole
+      utterance.text = text;
+      window.speechSynthesis.cancel();
+      window.speechSynthesis.speak(utterance);
     }
   }, [utterance, text]);
 
