@@ -40,7 +40,6 @@ const HomePage = () => {
       const res = await AIService.getDiseasePrecaution(symptoms);
       const fetchedPrecaution = res.data.data[0];
 
-      // Extract descriptions for all diseases
       const descriptions: { [key: string]: string } = {};
       Object.keys(fetchedPrecaution).forEach((disease) => {
         const diseaseInfo = fetchedPrecaution[disease];
