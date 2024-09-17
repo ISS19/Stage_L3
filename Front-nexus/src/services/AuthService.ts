@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const AUTH_API = "http://127.0.0.1:5000/auth/api/";
+const AUTH_API = "http://127.0.0.1:5000/auth/api";
 
 class AuthService {
   register(user: {}) {

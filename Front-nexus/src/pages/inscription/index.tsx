@@ -2,9 +2,13 @@ import React, { useEffect, useState } from "react";
 import styles from "@/styles/Inscription.module.scss";
 import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
+import AuthService from "@/services/AuthService";
+import { useSnackbar } from "notistack";
+import { Loader } from "@/components/Shared/Loader";
 
 function Inscription() {
   const { theme } = useTheme();
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -12,9 +16,64 @@ function Inscription() {
   }, [theme]);
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [disable, setDisable] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [formData, setFormData] = useState({
+    prenom: "",
+    nom: "",
+    age: "",
+    adresse: "",
+    num_tel: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  });
+
+  const validateStep1 = () => {
+    return formData.prenom && formData.nom && formData.age;
+  };
+
+  const validateStep2 = () => {
+    return formData.adresse && formData.num_tel && formData.email;
+  };
+
+  const validateStep3 = () => {
+    return formData.password && formData.confirmPassword;
+  };
 
   const handleNext = () => {
-    if (currentStep < 2) {
+    if (currentStep === 1 && !validateStep1()) {
+      enqueueSnackbar(
+        "Veuillez remplir tous les champs du premier formulaire.",
+        {
+          variant: "warning",
+        }
+      );
+      return;
+    }
+
+    if (currentStep === 2 && !validateStep2()) {
+      enqueueSnackbar(
+        "Veuillez remplir tous les champs du deuxième formulaire.",
+        {
+          variant: "warning",
+        }
+      );
+      return;
+    }
+
+    if (currentStep === 3 && !validateStep3()) {
+      enqueueSnackbar(
+        "Veuillez remplir tous les champs du troisième formulaire.",
+        {
+          variant: "warning",
+        }
+      );
+      return;
+    }
+
+    if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
   };
@@ -25,9 +84,46 @@ function Inscription() {
     }
   };
 
-  const handleSubmit = (event) => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log("Form submitted");
+    setDisable(true);
+
+    if (formData.password !== formData.confirmPassword) {
+      enqueueSnackbar("Les mots de passe ne correspondent pas.", {
+        variant: "error",
+      });
+      setDisable(false);
+      return;
+    }
+
+    const user = {
+      nom: formData.nom,
+      prenom: formData.prenom,
+      age: formData.age,
+      adresse: formData.adresse,
+      num_tel: formData.num_tel,
+      email: formData.email,
+      password: formData.password,
+    };
+
+    try {
+      const response = await AuthService.register(user);
+      enqueueSnackbar("Inscription réussie !", { variant: "success" });
+      console.log("User registered:", response.data);
+      setDisable(false);
+    } catch (error) {
+      console.error("Registration error:", error);
+      enqueueSnackbar("Erreur lors de l'inscription.", { variant: "error" });
+      setDisable(false);
+    }
   };
 
   return (
@@ -59,18 +155,38 @@ function Inscription() {
           <form onSubmit={handleSubmit}>
             {currentStep === 1 && (
               <div className={styles.step}>
-                {/* Première section d'inscription */}
                 <div className={styles.formGroup}>
-                  <label htmlFor="email">Email:</label>
-                  <input type="email" id="email" name="email" required />
+                  <label htmlFor="prenom">Prénom:</label>
+                  <input
+                    type="text"
+                    id="prenom"
+                    name="prenom"
+                    value={formData.prenom}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="password">Mot de passe:</label>
+                  <label htmlFor="nom">Nom:</label>
                   <input
-                    type="password"
-                    id="password"
-                    name="password"
+                    type="text"
+                    id="nom"
+                    name="nom"
+                    value={formData.nom}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="age">Âge:</label>
+                  <input
+                    type="number"
+                    id="age"
+                    name="age"
+                    value={formData.age}
+                    onChange={handleInputChange}
                     required
                   />
                 </div>
@@ -81,13 +197,90 @@ function Inscription() {
               <div className={styles.step}>
                 {/* Deuxième section d'inscription */}
                 <div className={styles.formGroup}>
-                  <label htmlFor="firstName">Prénom:</label>
-                  <input type="text" id="firstName" name="firstName" required />
+                  <label htmlFor="adresse">Adresse:</label>
+                  <input
+                    type="text"
+                    id="adresse"
+                    name="adresse"
+                    value={formData.adresse}
+                    onChange={handleInputChange}
+                    required
+                  />
                 </div>
 
                 <div className={styles.formGroup}>
-                  <label htmlFor="lastName">Nom:</label>
-                  <input type="text" id="lastName" name="lastName" required />
+                  <label htmlFor="num_tel">Numéro de téléphone:</label>
+                  <input
+                    type="tel"
+                    id="num_tel"
+                    name="num_tel"
+                    value={formData.num_tel}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="email">Email:</label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+
+            {currentStep === 3 && (
+              <div className={styles.step}>
+                {/* Troisième section avec mot de passe et confirmation */}
+                <div className={styles.formGroup}>
+                  <label htmlFor="password">Mot de passe:</label>
+                  <div className={styles.passwordInput}>
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className={styles.togglePassword}
+                    >
+                      {showPassword ? "🙈" : "🙉"}
+                    </button>
+                  </div>
+                </div>
+
+                <div className={styles.formGroup}>
+                  <label htmlFor="confirmPassword">
+                    Confirmer le mot de passe:
+                  </label>
+                  <div className={styles.passwordInput}>
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      value={formData.confirmPassword}
+                      onChange={handleInputChange}
+                      required
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowConfirmPassword(!showConfirmPassword)
+                      }
+                      className={styles.togglePassword}
+                    >
+                      {showConfirmPassword ? "🙈" : "🙉"}
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -106,7 +299,7 @@ function Inscription() {
                   </button>
                 )}
 
-                {currentStep < 2 ? (
+                {currentStep < 3 && (
                   <button
                     type="button"
                     className={styles.button}
@@ -114,9 +307,15 @@ function Inscription() {
                   >
                     Suivant
                   </button>
-                ) : (
-                  <button type="submit" className={styles.button}>
-                    Valider
+                )}
+
+                {currentStep === 3 && (
+                  <button
+                    type="submit"
+                    className={styles.button}
+                    disabled={disable}
+                  >
+                    {disable ? <div className={styles.spinner}></div> : "Valider"}
                   </button>
                 )}
               </div>
