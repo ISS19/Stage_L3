@@ -1,12 +1,19 @@
 import React from "react";
 import Link from "next/link";
+import { useTheme } from "@/contexts/ThemeContext"; // Assurez-vous que ce chemin est correct
 import styles from "@/styles/Navbar.module.scss";
 
 const Navbar = () => {
+  const { theme } = useTheme();
+
   return (
     <nav className={styles.navbar}>
       <div className={styles.left}>
-        <img src="/aid-logo.png" alt="" className={styles.logo} />
+        <img
+          src={theme === "dark" ? "/aid-logo-dark.png" : "/aid-logo.png"}
+          alt="Logo"
+          className={styles.logo}
+        />
         <Link href="/" className={styles.navLink}>
           Accueil
         </Link>

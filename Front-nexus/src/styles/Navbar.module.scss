@@ -22,7 +22,7 @@
       text-decoration: none;
       margin-right: 1rem;
       background: $primaryColor;
-      padding: 5px 20px 5px 20px;
+      padding: 5px 20px;
       border-radius: 20px;
     }
   }
@@ -52,7 +52,7 @@
     text-decoration: none;
     margin-right: 1rem;
     background: $primaryColor;
-    padding: 5px 20px 5px 20px;
+    padding: 5px 20px;
     border-radius: 20px;
   }
 
@@ -60,15 +60,50 @@
     display: flex;
     align-items: center;
     
-    .logo{
+    .logo {
       width: 10%;
-      height: 10%;
+      height: auto; 
     }
   }
 
   .right {
     display: flex;
     align-items: center;
+  }
+}
+
+
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .left, .right {
+    flex-direction: column;
+    width: 100%;
+    align-items: flex-start;
+  }
+
+  .navLink, .navLinkBis {
+    margin-right: 0;
+    margin-bottom: 1rem;
+  }
+
+  .logo {
+    width: 50%; 
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    .navLink, .navLinkBis {
+      font-size: 0.9rem;
+    }
+
+    .logo {
+      width: 70%; 
+    }
   }
 }
 

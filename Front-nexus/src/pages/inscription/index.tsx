@@ -1,8 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "@/styles/Inscription.module.scss";
 import Link from "next/link";
+import { useTheme } from "@/contexts/ThemeContext";
 
 function Inscription() {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    console.log(`Current theme: ${theme}`);
+  }, [theme]);
+
   const [currentStep, setCurrentStep] = useState(1);
 
   const handleNext = () => {
@@ -25,7 +33,11 @@ function Inscription() {
   return (
     <>
       <Link href="/">
-        <img src="/aid-logo.png" alt="" className={styles.logo} />
+        <img
+          src={theme === "dark" ? "/aid-logo-dark.png" : "/aid-logo.png"}
+          alt="Logo"
+          className={styles.logo}
+        />
       </Link>
       <div className={styles.container}>
         <div className={styles.titleBox}>

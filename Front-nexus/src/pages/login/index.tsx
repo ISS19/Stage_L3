@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
 import styles from "@/styles/Login.module.scss";
 import Link from "next/link";
 
 function Login() {
+  const { theme } = useTheme();
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    console.log(`Current theme: ${theme}`);
+  }, [theme]);
+
   return (
     <>
       <Link href="/">
-        <img src="/aid-logo.png" alt="" className={styles.logo} />
+        <img
+          src={theme === "dark" ? "/aid-logo-dark.png" : "/aid-logo.png"}
+          alt="Logo"
+          className={styles.logo}
+        />
       </Link>
       <div className={styles.container}>
         <div className={styles.titleBox}>

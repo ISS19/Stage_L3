@@ -28,6 +28,27 @@
     color: $background;
     background: $primaryColor;
   }
+
+  .footer {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    color: $textColor;
+  
+    p {
+      margin: 0;
+      font-size: 0.875rem;
+    }
+  
+    @include mobile {
+      padding: 15px;
+      p {
+        font-size: 0.75rem;
+      }
+    }
+  }
 }
 
 [data-theme="light"] {
