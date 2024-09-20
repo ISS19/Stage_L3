@@ -51,7 +51,9 @@ function Login() {
     try {
       const response = await AuthService.signin(user);
       enqueueSnackbar("Connexion réussie !", { variant: "success" });
+      
       console.log("User logged in:", response.data);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
       router.push("/consulter")
       
     } catch (error) {

@@ -54,7 +54,20 @@ class AuthController:
         if not identifier or not password:
             return jsonify({"status": False, "message": "Invalid input"}), 400
 
-        user = User()
-        if user.verify_user(identifier, password):
-            return jsonify({"status": True, "message": "Login successful"}), 200
+        user_model = User()
+        user = user_model.verify_user(identifier, password)
+
+        if user:
+            user_info = {
+                "nom": user.get("nom"),
+                "prenom": user.get("prenom"),
+                "age": user.get("age"),
+                "email": user.get("email"),
+                "adresse": user.get("adresse"),
+                "num_tel": user.get("num_tel"),
+                # Add more fields as needed
+            }
+            return jsonify({"status": True, "message": "Login successful", "user": user_info}), 200
+
         return jsonify({"status": False, "message": "Invalid credentials"}), 401
+

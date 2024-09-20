@@ -1,6 +1,7 @@
 from flask import current_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from pymongo import MongoClient
+from bson import ObjectId 
 
 
 class User:
@@ -34,7 +35,7 @@ class User:
             ]
         })
         if user and check_password_hash(user["password"], password):
-            return True
+            return user
         return False
 
     def get_user(self, user_id):

@@ -6,8 +6,12 @@ import "@/styles/globals.scss";
 import styles from "@/styles/Navbar.module.scss";
 import ThemeToggleButton from "@/components/Shared/ThemeToggleButton";
 import { SnackbarProvider } from "notistack";
+import useVerifySession from "@/hooks/useVerifySessin";
 
 function MyApp({ Component, pageProps }: AppProps) {
+
+  useVerifySession();
+
   return (
     <SnackbarProvider
       maxSnack={3}
