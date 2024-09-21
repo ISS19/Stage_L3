@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useTheme } from "@/contexts/ThemeContext";
 import AuthService from "@/services/AuthService";
 import { useSnackbar } from "notistack";
-import { Loader } from "@/components/Shared/Loader";
+import { motion } from "framer-motion";
 
 function Inscription() {
   const { theme } = useTheme();
@@ -30,19 +30,31 @@ function Inscription() {
     confirmPassword: "",
   });
 
-  const validateStep1 = () => {
+  /* const formVariant = {
+    initial: { opacity: , y: "-100vw" },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 0, y: "100vw" },
+  } */
+
+  const pageTransition = {
+    type: "tween",
+    ease: "anticipate",
+    duration: 0.7,
+  };
+
+  function validateStep1() {
     return formData.prenom && formData.nom && formData.age;
-  };
+  }
 
-  const validateStep2 = () => {
+  function validateStep2() {
     return formData.adresse && formData.num_tel && formData.email;
-  };
+  }
 
-  const validateStep3 = () => {
+  function validateStep3() {
     return formData.password && formData.confirmPassword;
-  };
+  }
 
-  const handleNext = () => {
+  function handleNext() {
     if (currentStep === 1 && !validateStep1()) {
       enqueueSnackbar(
         "Veuillez remplir tous les champs du premier formulaire.",
@@ -76,23 +88,23 @@ function Inscription() {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
-  };
+  }
 
-  const handlePrevious = () => {
+  function handlePrevious() {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
-  };
+  }
 
-  const handleInputChange = (e) => {
+  function handleInputChange(e) {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     setDisable(true);
 
@@ -124,7 +136,7 @@ function Inscription() {
       enqueueSnackbar("Erreur lors de l'inscription.", { variant: "error" });
       setDisable(false);
     }
-  };
+  }
 
   return (
     <>
@@ -146,201 +158,212 @@ function Inscription() {
         </div>
 
         <div className={styles.loginBox}>
-          <div className={styles.title}>
-            <h1>S'inscrire</h1>
-            <p>Inscrivez vos informations personnelles</p>
-          </div>
-          <br />
-          <br />
-          <form onSubmit={handleSubmit}>
-            {currentStep === 1 && (
-              <div className={styles.step}>
-                <div className={styles.formGroup}>
-                  <label htmlFor="prenom">Prénom:</label>
-                  <input
-                    type="text"
-                    id="prenom"
-                    name="prenom"
-                    value={formData.prenom}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="nom">Nom:</label>
-                  <input
-                    type="text"
-                    id="nom"
-                    name="nom"
-                    value={formData.nom}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="age">Âge:</label>
-                  <input
-                    type="number"
-                    id="age"
-                    name="age"
-                    value={formData.age}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {currentStep === 2 && (
-              <div className={styles.step}>
-                {/* Deuxième section d'inscription */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="adresse">Adresse:</label>
-                  <input
-                    type="text"
-                    id="adresse"
-                    name="adresse"
-                    value={formData.adresse}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="num_tel">Numéro de téléphone:</label>
-                  <input
-                    type="tel"
-                    id="num_tel"
-                    name="num_tel"
-                    value={formData.num_tel}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className={styles.formGroup}>
-                  <label htmlFor="email">Email:</label>
-                  <input
-                    type="email"
-                    id="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-              </div>
-            )}
-
-            {currentStep === 3 && (
-              <div className={styles.step}>
-                {/* Troisième section avec mot de passe et confirmation */}
-                <div className={styles.formGroup}>
-                  <label htmlFor="password">Mot de passe:</label>
-                  <div className={styles.passwordInput}>
+          <motion.div
+            initial={{ opacity: 1, y: "-100vw" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 1, y: "100vw" }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className={styles.title}>
+              <h1>S'inscrire</h1>
+              <p>Inscrivez vos informations personnelles</p>
+            </div>
+            <br />
+            <br />
+            <form onSubmit={handleSubmit}>
+              {currentStep === 1 && (
+                <div className={styles.step}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="prenom">Prénom:</label>
                     <input
-                      type={showPassword ? "text" : "password"}
-                      id="password"
-                      name="password"
-                      value={formData.password}
+                      type="text"
+                      id="prenom"
+                      name="prenom"
+                      value={formData.prenom}
                       onChange={handleInputChange}
                       required
                     />
-                    <button
-                      type="button"
-                      onClick={() => setShowPassword(!showPassword)}
-                      className={styles.togglePassword}
-                    >
-                      {showPassword ? "🙈" : "🙉"}
-                    </button>
                   </div>
-                </div>
 
-                <div className={styles.formGroup}>
-                  <label htmlFor="confirmPassword">
-                    Confirmer le mot de passe:
-                  </label>
-                  <div className={styles.passwordInput}>
+                  <div className={styles.formGroup}>
+                    <label htmlFor="nom">Nom:</label>
                     <input
-                      type={showConfirmPassword ? "text" : "password"}
-                      id="confirmPassword"
-                      name="confirmPassword"
-                      value={formData.confirmPassword}
+                      type="text"
+                      id="nom"
+                      name="nom"
+                      value={formData.nom}
                       onChange={handleInputChange}
                       required
                     />
-                    <button
-                      type="button"
-                      onClick={() =>
-                        setShowConfirmPassword(!showConfirmPassword)
-                      }
-                      className={styles.togglePassword}
-                    >
-                      {showConfirmPassword ? "🙈" : "🙉"}
-                    </button>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="age">Âge:</label>
+                    <input
+                      type="number"
+                      id="age"
+                      name="age"
+                      value={formData.age}
+                      onChange={handleInputChange}
+                      required
+                    />
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
+              {currentStep === 2 && (
+                <div className={styles.step}>
+                  {/* Deuxième section d'inscription */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="adresse">Adresse:</label>
+                    <input
+                      type="text"
+                      id="adresse"
+                      name="adresse"
+                      value={formData.adresse}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="num_tel">Numéro de téléphone:</label>
+                    <input
+                      type="tel"
+                      id="num_tel"
+                      name="num_tel"
+                      value={formData.num_tel}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="email">Email:</label>
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                    />
+                  </div>
+                </div>
+              )}
+
+              {currentStep === 3 && (
+                <div className={styles.step}>
+                  {/* Troisième section avec mot de passe et confirmation */}
+                  <div className={styles.formGroup}>
+                    <label htmlFor="password">Mot de passe:</label>
+                    <div className={styles.passwordInput}>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        id="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className={styles.togglePassword}
+                      >
+                        {showPassword ? "🙈" : "🙉"}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={styles.formGroup}>
+                    <label htmlFor="confirmPassword">
+                      Confirmer le mot de passe:
+                    </label>
+                    <div className={styles.passwordInput}>
+                      <input
+                        type={showConfirmPassword ? "text" : "password"}
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        value={formData.confirmPassword}
+                        onChange={handleInputChange}
+                        required
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
+                        className={styles.togglePassword}
+                      >
+                        {showConfirmPassword ? "🙈" : "🙉"}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              <br />
+
+              <div className={styles.formGroup}>
+                <div className={styles.buttonGroup}>
+                  {currentStep > 1 && (
+                    <button
+                      type="button"
+                      className={styles.button}
+                      onClick={handlePrevious}
+                    >
+                      Précédent
+                    </button>
+                  )}
+
+                  {currentStep < 3 && (
+                    <button
+                      type="button"
+                      className={styles.button}
+                      onClick={handleNext}
+                    >
+                      Suivant
+                    </button>
+                  )}
+
+                  {currentStep === 3 && (
+                    <button
+                      type="submit"
+                      className={styles.button}
+                      disabled={disable}
+                    >
+                      {disable ? (
+                        <div className={styles.spinner}></div>
+                      ) : (
+                        "Valider"
+                      )}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </form>
+
+            <p className={styles.linkSignin}>
+              Déjà inscrit?{" "}
+              <Link href="/login" className={styles.loginLink}>
+                Connectez-vous ici
+              </Link>
+            </p>
+
+            <img
+              src="/online-doctor-animate.svg"
+              alt="Doctor"
+              className={`${styles.imgDoctor} ${styles.mobile}`}
+            />
             <br />
 
-            <div className={styles.formGroup}>
-              <div className={styles.buttonGroup}>
-                {currentStep > 1 && (
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={handlePrevious}
-                  >
-                    Précédent
-                  </button>
-                )}
-
-                {currentStep < 3 && (
-                  <button
-                    type="button"
-                    className={styles.button}
-                    onClick={handleNext}
-                  >
-                    Suivant
-                  </button>
-                )}
-
-                {currentStep === 3 && (
-                  <button
-                    type="submit"
-                    className={styles.button}
-                    disabled={disable}
-                  >
-                    {disable ? <div className={styles.spinner}></div> : "Valider"}
-                  </button>
-                )}
-              </div>
-            </div>
-          </form>
-
-          <p className={styles.linkSignin}>
-            Déjà inscrit?{" "}
-            <Link href="/login" className={styles.loginLink}>
-              Connectez-vous ici
-            </Link>
-          </p>
-
-          <img
-            src="/online-doctor-animate.svg"
-            alt="Doctor"
-            className={`${styles.imgDoctor} ${styles.mobile}`}
-          />
-          <br />
-
-          <footer className={styles.footer}>
-            <p>
-              &copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.
-            </p>
-          </footer>
+            <footer className={styles.footer}>
+              <p>
+                &copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.
+              </p>
+            </footer>
+          </motion.div>
         </div>
       </div>
     </>

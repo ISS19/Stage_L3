@@ -5,6 +5,7 @@ import Link from "next/link";
 import AuthService from "@/services/AuthService";
 import { useSnackbar } from "notistack";
 import { useRouter } from "next/router";
+import { motion } from "framer-motion";
 
 function Login() {
   const { theme } = useTheme();
@@ -18,20 +19,26 @@ function Login() {
 
   const router = useRouter();
 
+  const pageVariants = {
+    initial: { opacity: 1, y: "-100vw" },
+    in: { opacity: 1, y: 0 },
+    out: { opacity: 1, y: "100vw" },
+  };
+
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     console.log(`Current theme: ${theme}`);
   }, [theme]);
 
-  const handleInputChange = (e) => {
+  function handleInputChange(e) {
     const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value,
     });
-  };
+  }
 
-  const handleSubmit = async (event) => {
+  async function handleSubmit(event) {
     event.preventDefault();
     setDisable(true);
 
@@ -51,18 +58,17 @@ function Login() {
     try {
       const response = await AuthService.signin(user);
       enqueueSnackbar("Connexion réussie !", { variant: "success" });
-      
+
       console.log("User logged in:", response.data);
       localStorage.setItem("user", JSON.stringify(response.data.user));
-      router.push("/consulter")
-      
+      router.push("/consulter");
     } catch (error) {
       console.error("Login error:", error);
       enqueueSnackbar("Erreur lors de la connexion.", { variant: "error" });
     } finally {
       setDisable(false);
     }
-  };
+  }
 
   return (
     <>
@@ -84,93 +90,100 @@ function Login() {
         </div>
 
         <div className={styles.loginBox}>
-          <div className={styles.title}>
-            <h1>Se connecter</h1>
-            <p>Connectez-vous pour consulter le docteur</p>
-          </div>
-          <br />
-          <br />
-          <form onSubmit={handleSubmit}>
-            <div className={styles.formGroup}>
-              <label htmlFor="identifier">Email:</label>
-              <input
-                type="text"
-                id="identifier"
-                name="identifier"
-                value={formData.identifier}
-                onChange={handleInputChange}
-                required
-              />
+          <motion.div
+            initial={{ opacity: 1, y: "-100vw" }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 1, y: "100vw" }}
+            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <div className={styles.title}>
+              <h1>Se connecter</h1>
+              <p>Connectez-vous pour consulter le docteur</p>
             </div>
-
-            <div className={styles.formGroup}>
-              <label htmlFor="password">Mot de passe:</label>
-              <div className={styles.passwordInput}>
+            <br />
+            <br />
+            <form onSubmit={handleSubmit}>
+              <div className={styles.formGroup}>
+                <label htmlFor="identifier">Email:</label>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formData.password}
+                  type="text"
+                  id="identifier"
+                  name="identifier"
+                  value={formData.identifier}
                   onChange={handleInputChange}
                   required
                 />
+              </div>
+
+              <div className={styles.formGroup}>
+                <label htmlFor="password">Mot de passe:</label>
+                <div className={styles.passwordInput}>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className={styles.togglePassword}
+                  >
+                    {showPassword ? "🙈" : "🙉"}
+                  </button>
+                </div>
+              </div>
+
+              <div className={styles.formGroup}>
+                <div className={styles.rememberAndForgot}>
+                  <div className={styles.rememberMe}>
+                    <input type="checkbox" id="rememberMe" name="rememberMe" />
+                    <label htmlFor="rememberMe">Rester connecté</label>
+                  </div>
+                  <a href="#" className={styles.forgotPassword}>
+                    Mot de passe oublié?
+                  </a>
+                </div>
+              </div>
+              <br />
+
+              <div className={styles.formGroup}>
                 <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className={styles.togglePassword}
+                  type="submit"
+                  className={styles.button}
+                  disabled={disable}
                 >
-                  {showPassword ? "🙈" : "🙉"}
+                  {disable ? (
+                    <div className={styles.spinner}></div>
+                  ) : (
+                    "Se connecter"
+                  )}
                 </button>
               </div>
-            </div>
+            </form>
 
-            <div className={styles.formGroup}>
-              <div className={styles.rememberAndForgot}>
-                <div className={styles.rememberMe}>
-                  <input type="checkbox" id="rememberMe" name="rememberMe" />
-                  <label htmlFor="rememberMe">Rester connecté</label>
-                </div>
-                <a href="#" className={styles.forgotPassword}>
-                  Mot de passe oublié?
-                </a>
-              </div>
-            </div>
-            <br />
-
-            <div className={styles.formGroup}>
-              <button
-                type="submit"
-                className={styles.button}
-                disabled={disable}
-              >
-                {disable ? (
-                  <div className={styles.spinner}></div>
-                ) : (
-                  "Se connecter"
-                )}
-              </button>
-            </div>
-          </form>
-
-          <p className={styles.linkSignup}>
-            Pas encore inscrit?{" "}
-            <Link href="/inscription" className={styles.registerLink}>
-              Créez un compte ici
-            </Link>
-          </p>
-
-          <img
-            src="/online-doctor-animate.svg"
-            alt="Doctor"
-            className={`${styles.imgDoctor} ${styles.mobile}`}
-          />
-
-          <br />
-          <footer className={styles.footer}>
-            <p>
-              &copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.
+            <p className={styles.linkSignup}>
+              Pas encore inscrit?{" "}
+              <Link href="/inscription" className={styles.registerLink}>
+                Créez un compte ici
+              </Link>
             </p>
-          </footer>
+
+            <img
+              src="/online-doctor-animate.svg"
+              alt="Doctor"
+              className={`${styles.imgDoctor} ${styles.mobile}`}
+            />
+
+            <br />
+            <footer className={styles.footer}>
+              <p>
+                &copy; {new Date().getFullYear()} AID-NEXUS. Pour vous servir.
+              </p>
+            </footer>
+          </motion.div>
         </div>
       </div>
     </>
