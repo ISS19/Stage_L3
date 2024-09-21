@@ -20,10 +20,11 @@ function Login() {
   const router = useRouter();
 
   const pageVariants = {
-    initial: { opacity: 1, y: "-100vw" },
+    initial: { opacity: 1, y: "-200vw" },
     in: { opacity: 1, y: 0 },
-    out: { opacity: 1, y: "100vw" },
+    out: { opacity: 1, y: "200vw" },
   };
+
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -91,10 +92,11 @@ function Login() {
 
         <div className={styles.loginBox}>
           <motion.div
-            initial={{ opacity: 1, y: "-100vw" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 1, y: "100vw" }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={{ duration: 0.8, easeInOut: [0.22, 1, 0.36, 1] }}
           >
             <div className={styles.title}>
               <h1>Se connecter</h1>

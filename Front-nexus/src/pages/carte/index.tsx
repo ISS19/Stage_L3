@@ -1,21 +1,15 @@
 import dynamic from 'next/dynamic';
 import styles from "@/styles/Carte.module.scss";
 import { useRouter } from 'next/router';
+import NavbarConsultation from '@/components/Shared/NavbarConsultation';
 
 const Map = dynamic(() => import('@/components/Map'), { ssr: false });
 
-const Home: React.FC = () => {
-
-    const router = useRouter();
+const Carte: React.FC = () => {
 
   return (
     <div>
-      <header className={styles.header}>
-        <nav>
-          <button onClick={() => router.push("/consulter")}>Docteur</button>
-          <button onClick={() => router.push("/carte")}>Carte</button>
-        </nav>
-      </header>
+      <NavbarConsultation />
       <div className={styles.mapContainer}>
       <Map />
       </div>
@@ -23,4 +17,4 @@ const Home: React.FC = () => {
   );
 };
 
-export default Home;
+export default Carte;

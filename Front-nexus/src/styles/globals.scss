@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
-@import './variable.module.scss';
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
+@import "./variable.module.scss";
 
-[data-theme='dark'] {
-  @import './variable-dark.module.scss';
+[data-theme="dark"] {
+  @import "./variable-dark.module.scss";
 
-  body{
+  body {
     background-color: $background;
   }
 }
@@ -21,24 +21,25 @@ html {
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: $background;
   transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 ::-webkit-scrollbar {
-  width: 7px; 
+  width: 7px;
 }
 
 ::-webkit-scrollbar-track {
   background: #f1f1f1;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #888; 
-  border-radius: 5px; 
+  background: #888;
+  border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }

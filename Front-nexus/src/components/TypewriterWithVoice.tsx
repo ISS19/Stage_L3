@@ -6,6 +6,17 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onCom
   const [utterance, setUtterance] = useState(null);
   const [speechStarted, setSpeechStarted] = useState(false);
 
+  const userSession = localStorage.getItem('user');
+
+  if (userSession) {
+    const userObject = JSON.parse(userSession);
+    const userName = userObject.name; 
+    console.log("Nom de l'utilisateur : ", userName);
+  } else {
+    console.log("Aucun utilisateur trouvé dans le localStorage.");
+  }
+
+
   useEffect(() => {
     const speech = new SpeechSynthesisUtterance();
     speech.rate = rate;
@@ -32,7 +43,6 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onCom
       setIndex((prev) => prev + 1);
     }, 62);
 
-    // Call onComplete when the typewriter reaches the end of the text
     if (index === text.length - 1 && onComplete) {
       onComplete();
     }
@@ -48,7 +58,7 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onCom
     }
   }, [utterance, text]);
 
-  return <div>{displayedText}</div>;
+  return <div><span></span>{displayedText}</div>;
 };
 
 export default TypewriterWithVoice;

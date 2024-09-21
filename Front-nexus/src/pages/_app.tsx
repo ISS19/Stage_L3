@@ -17,20 +17,22 @@ function MyApp({ Component, pageProps }: AppProps) {
 
   return (
     <AnimatePresence mode="wait">
-      <SnackbarProvider
-        maxSnack={3}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "center",
-        }}
-      >
-        <ThemeProvider>
+      
+        <SnackbarProvider
+          maxSnack={3}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "center",
+          }}
+        >
           <motion.div key={router.pathname}>
+          <ThemeProvider>
             <Component {...pageProps} />
+            <ThemeToggleButton styles={{ themeToggle: styles.themeToggle }} />
+          </ThemeProvider>
           </motion.div>
-          <ThemeToggleButton styles={{ themeToggle: styles.themeToggle }} />
-        </ThemeProvider>
-      </SnackbarProvider>
+        </SnackbarProvider>
+      
     </AnimatePresence>
   );
 }

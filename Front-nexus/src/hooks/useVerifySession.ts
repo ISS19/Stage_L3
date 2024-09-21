@@ -6,17 +6,15 @@ const useVerifySession = () => {
   const router = useRouter();
 
   useEffect(() => {
-    
     const protectedRoutes = ["/consulter", "/carte"];
 
- 
     if (protectedRoutes.includes(router.pathname)) {
-      const userSession = localStorage.getItem("userSession"); 
+      const userSession = localStorage.getItem("user");
 
       if (!userSession) {
-        enqueueSnackbar("Veuillez remplir tous les champs.", {
-            variant: "warning",
-          });
+        enqueueSnackbar("Veuillez vous connectez d'abord", {
+          variant: "warning",
+        });
         router.push("/login");
       }
     }

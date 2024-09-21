@@ -5,9 +5,11 @@ import { Canvas } from "@react-three/fiber";
 import styles from "@/styles/Consulter.module.scss";
 import TypewriterWithVoice from "@/components/TypewriterWithVoice";
 import AIService from "@/services/AIService";
-import { useRouter } from "next/router";
+import { useTheme } from "@/contexts/ThemeContext";
+import NavbarConsultation from "@/components/Shared/NavbarConsultation";
+import { enqueueSnackbar } from "notistack";
 
-const HomePage = () => {
+const Consulter = () => {
   const [voice, setVoice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -17,7 +19,7 @@ const HomePage = () => {
   const [symptome3, setSymptome3] = useState<string | undefined>();
   const [symptome4, setSymptome4] = useState<string | undefined>();
 
-  const router = useRouter();
+  const { theme } = useTheme();
 
   const [diseaseDescriptions, setDiseaseDescriptions] = useState<{
     [key: string]: string;
@@ -33,33 +35,51 @@ const HomePage = () => {
       setter(e.target.value);
     };
 
-  async function handleSendSymptoms() {
-    const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(
-      Boolean
-    ) as string[];
-    setVoice(false);
-    setLoading(true);
-    setAnimationComplete(false);
-    try {
-      const res = await AIService.getDiseasePrecaution(symptoms);
-      const fetchedPrecaution = res.data.data[0];
+    async function handleSendSymptoms() {
+      const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(Boolean) as string[];
+  
+      if (symptoms.length === 0) {
+          enqueueSnackbar("Entrez au moins un symptôme pour pouvoir vous examiner", {
+              variant: "warning",
+          });
+          return;
+      }
+  
+      setVoice(false);
+      setLoading(true);
+      setAnimationComplete(false);
+  
+      try {
+          const res = await AIService.getDiseasePrecaution(symptoms);
+          const fetchedPrecaution = res.data.data[0];
+  
+          const diseaseKeys = Object.keys(fetchedPrecaution);
+          const descriptions: { [key: string]: string } = {};
+  
+          if (diseaseKeys.length === 1) {
+              const firstDiseaseInfo = fetchedPrecaution[diseaseKeys[0]];
+              if (firstDiseaseInfo && firstDiseaseInfo.description) {
+                  descriptions[diseaseKeys[0]] = firstDiseaseInfo.description.Description;
+              }
+          } else {
+              for (let i = 0; i < Math.min(4, diseaseKeys.length); i++) {
+                  const diseaseKey = diseaseKeys[i];
+                  const diseaseInfo = fetchedPrecaution[diseaseKey];
+                  if (diseaseInfo && diseaseInfo.description) {
+                      descriptions[diseaseKey] = diseaseInfo.description.Description;
+                  }
+              }
+          }
 
-      const descriptions: { [key: string]: string } = {};
-      Object.keys(fetchedPrecaution).forEach((disease) => {
-        const diseaseInfo = fetchedPrecaution[disease];
-        if (diseaseInfo && diseaseInfo.description) {
-          descriptions[disease] = diseaseInfo.description.Description;
-        }
-      });
-
-      setDiseaseDescriptions(descriptions);
-      setVoice(true);
-    } catch (error) {
-      console.error("Error fetching precautions:", error);
-    } finally {
-      setLoading(false);
-    }
+          setDiseaseDescriptions(descriptions);
+          setVoice(true);
+      } catch (error) {
+          console.error("Error fetching precautions:", error);
+      } finally {
+          setLoading(false);
+      }
   }
+  
 
   useEffect(() => {
     if (diseaseDescriptions) {
@@ -69,12 +89,8 @@ const HomePage = () => {
 
   return (
     <div className={styles.container}>
-      <header className={styles.header}>
-        <nav>
-          <button onClick={() => router.push("/consulter")}>Docteur</button>
-          <button onClick={() => router.push("/carte")}>Carte</button>
-        </nav>
-      </header>
+      <NavbarConsultation />
+
       <main className={styles.main}>
         <div className={styles.leftPanel}>
           <input
@@ -102,7 +118,7 @@ const HomePage = () => {
             onChange={handleSymptomeChange(setSymptome4)}
           />
           <button onClick={handleSendSymptoms} disabled={loading}>
-            Send Symptoms
+            {loading ? <div className={styles.spinner}></div> : "Examiner"}
           </button>
         </div>
         <div className={styles.centerPanel}>
@@ -117,12 +133,19 @@ const HomePage = () => {
           </Canvas>
         </div>
         <div className={styles.rightPanel}>
-          {voice && concatenatedDescriptions && (
-            <TypewriterWithVoice
-              text={concatenatedDescriptions}
-              onComplete={() => setAnimationComplete(true)}
-            />
-          )}
+          <div className={styles.AiResponse}>
+            {voice && concatenatedDescriptions ? (
+              <TypewriterWithVoice
+                text={concatenatedDescriptions}
+                onComplete={() => setAnimationComplete(true)}
+              />
+            ) : (
+              <div className={styles.preResponse}>
+                Les reponses du docteur s'afficheront ici <br />{" "}
+                <img src="/aid-logos.png" className={styles.logo} alt="" />
+              </div>
+            )}
+          </div>
           <button>Save</button>
           <button>Download</button>
           <button>Evaluate</button>
@@ -132,4 +155,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default Consulter;

@@ -5,6 +5,7 @@ import { useTheme } from "@/contexts/ThemeContext";
 import AuthService from "@/services/AuthService";
 import { useSnackbar } from "notistack";
 import { motion } from "framer-motion";
+import { useRouter } from "next/router";
 
 function Inscription() {
   const { theme } = useTheme();
@@ -19,6 +20,9 @@ function Inscription() {
   const [disable, setDisable] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     prenom: "",
     nom: "",
@@ -30,17 +34,12 @@ function Inscription() {
     confirmPassword: "",
   });
 
-  /* const formVariant = {
-    initial: { opacity: , y: "-100vw" },
+  const pageVariants = {
+    initial: { opacity: 0, y: "-200vw" },
     in: { opacity: 1, y: 0 },
-    out: { opacity: 0, y: "100vw" },
-  } */
-
-  const pageTransition = {
-    type: "tween",
-    ease: "anticipate",
-    duration: 0.7,
+    out: { opacity: 0, y: "200vw" },
   };
+
 
   function validateStep1() {
     return formData.prenom && formData.nom && formData.age;
@@ -129,6 +128,7 @@ function Inscription() {
     try {
       const response = await AuthService.register(user);
       enqueueSnackbar("Inscription réussie !", { variant: "success" });
+      router.push("/login");
       console.log("User registered:", response.data);
       setDisable(false);
     } catch (error) {
@@ -159,10 +159,11 @@ function Inscription() {
 
         <div className={styles.loginBox}>
           <motion.div
-            initial={{ opacity: 1, y: "-100vw" }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 1, y: "100vw" }}
-            transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+            initial="initial"
+            animate="in"
+            exit="out"
+            variants={pageVariants}
+            transition={{ duration: 0.8, easeInOut: [0.22, 1, 0.36, 1] }}
           >
             <div className={styles.title}>
               <h1>S'inscrire</h1>
