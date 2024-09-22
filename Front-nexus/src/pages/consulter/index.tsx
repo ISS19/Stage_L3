@@ -5,11 +5,14 @@ import { Canvas } from "@react-three/fiber";
 import styles from "@/styles/Consulter.module.scss";
 import TypewriterWithVoice from "@/components/TypewriterWithVoice";
 import AIService from "@/services/AIService";
+import HistoriqueService from "@/services/HistoriqueService";
 import { useTheme } from "@/contexts/ThemeContext";
 import NavbarConsultation from "@/components/Shared/NavbarConsultation";
 import { enqueueSnackbar } from "notistack";
+import { getUser } from "@/utils/helpers";
+import jsPDF from "jspdf";
 
-const Consulter = () => {
+function Consulter() {
   const [voice, setVoice] = useState(false);
   const [loading, setLoading] = useState(false);
   const [animationComplete, setAnimationComplete] = useState(false);
@@ -19,11 +22,11 @@ const Consulter = () => {
   const [symptome3, setSymptome3] = useState<string | undefined>();
   const [symptome4, setSymptome4] = useState<string | undefined>();
 
-  const { theme } = useTheme();
-
   const [diseaseDescriptions, setDiseaseDescriptions] = useState<{
     [key: string]: string;
   }>({});
+
+  const { theme } = useTheme();
 
   const concatenatedDescriptions = Object.entries(diseaseDescriptions)
     .map(([disease, description]) => `${disease}: ${description}`)
@@ -39,6 +42,58 @@ const Consulter = () => {
     document.documentElement.setAttribute("data-theme", theme);
     console.log(`Current theme: ${theme}`);
   }, [theme]);
+
+  useEffect(() => {
+    if (diseaseDescriptions) {
+      console.log({ diseaseDescriptions });
+    }
+  }, [diseaseDescriptions]);
+
+  function handleDownload() {
+    const doc = new jsPDF();
+
+    const user = getUser();
+    const userName = user ? user.nom : null;
+
+    const logoPath = "/aid-logo.png";
+    const logo = new Image();
+    logo.src = logoPath;
+
+    logo.onload = () => {
+      doc.addImage(logo, "PNG", 10, 0, 40, 40);
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(16);
+      doc.text(`Prévention des Maladies pour ${userName}`, 10, 40);
+
+      doc.text("", 10, 50);
+
+      doc.setFontSize(12);
+      doc.setTextColor(0, 0, 0);
+
+      const maxWidth = 190;
+
+      const entries = Object.entries(diseaseDescriptions);
+      let verticalOffset = 60;
+
+      entries.forEach(([disease, description]) => {
+        doc.setFont("helvetica", "bold");
+        doc.text(disease, 10, verticalOffset);
+        verticalOffset += 10;
+
+        doc.setFont("helvetica", "normal");
+        const lines = doc.splitTextToSize(description, maxWidth);
+
+        lines.forEach((line: string) => {
+          doc.text(line, 10, verticalOffset);
+          verticalOffset += 10;
+        });
+
+        verticalOffset += 5;
+      });
+
+      doc.save("precautions.pdf");
+    };
+  }
 
   async function handleSendSymptoms() {
     const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(
@@ -66,15 +121,14 @@ const Consulter = () => {
 
       if (diseaseKeys.length === 1) {
         const firstDiseaseInfo = fetchedPrecaution[diseaseKeys[0]];
+
         if (firstDiseaseInfo && firstDiseaseInfo.description) {
-          // Description de la maladie
           descriptions[
             diseaseKeys[0]
           ] = `Description: ${firstDiseaseInfo.description.Description}`;
 
-          // Régimes alimentaires
           if (firstDiseaseInfo.diets && firstDiseaseInfo.diets.length > 0) {
-            const diets = firstDiseaseInfo.diets.map((d) => d.Diet).join(", ");
+            const diets = firstDiseaseInfo.diets.map((d: any) => d.Diet).join(", ");
             descriptions[diseaseKeys[0]] += `\nRégimes recommandés: ${diets}`;
           }
 
@@ -83,7 +137,7 @@ const Consulter = () => {
             firstDiseaseInfo.medications.length > 0
           ) {
             const medications = firstDiseaseInfo.medications
-              .map((m) => m.Medication)
+              .map((m: any) => m.Medication)
               .join(", ");
             descriptions[
               diseaseKeys[0]
@@ -96,7 +150,7 @@ const Consulter = () => {
           ) {
             const precautions = firstDiseaseInfo.precautions
               .map(
-                (p) =>
+                (p: any) =>
                   `\n- ${p.Precaution_1}\n- ${p.Precaution_2}\n- ${p.Precaution_3}\n- ${p.Precaution_4}`
               )
               .join("\n");
@@ -111,22 +165,29 @@ const Consulter = () => {
             descriptions[diseaseKey] = diseaseInfo.description.Description;
           }
         }
+        enqueueSnackbar(
+          "Donnez plus de symptôme pour un peu plus de precision",
+          { variant: "info" }
+        );
       }
-
       setDiseaseDescriptions(descriptions);
       setVoice(true);
+      setLoading(false);
+
+      const user = getUser();
+      const userId = user ? user.id : null;
+
+      const historique = {
+        user_id: userId,
+        analysis_result: fetchedPrecaution,
+      };
+
+      const saveHistorique = await HistoriqueService.saveHistorique(historique);
+      console.log(saveHistorique.data);
     } catch (error) {
       console.error("Error fetching precautions:", error);
-    } finally {
-      setLoading(false);
     }
   }
-
-  useEffect(() => {
-    if (diseaseDescriptions) {
-      console.log({ diseaseDescriptions });
-    }
-  }, [diseaseDescriptions]);
 
   return (
     <div className={styles.container}>
@@ -193,13 +254,11 @@ const Consulter = () => {
               </div>
             )}
           </div>
-          <button>Save</button>
-          <button>Download</button>
-          <button>Evaluate</button>
+          <button onClick={handleDownload}>Download</button>
         </div>
       </main>
     </div>
   );
-};
+}
 
 export default Consulter;

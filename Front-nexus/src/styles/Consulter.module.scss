@@ -119,7 +119,11 @@
   }
   .AiResponse {
     overflow: auto;
-    height: 60vh;
+    height: 72vh;
+    @include tablet {
+      width: 100%;
+      height: auto;
+    }
   }
   .logo {
     width: 250px;

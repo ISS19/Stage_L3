@@ -95,7 +95,7 @@ function Inscription() {
     }
   }
 
-  function handleInputChange(e) {
+  function handleInputChange(e: any) {
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -103,7 +103,7 @@ function Inscription() {
     });
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: any) {
     event.preventDefault();
     setDisable(true);
 
