@@ -41,3 +41,17 @@ class User:
     def get_user(self, user_id):
         user = self.collection.find_one({"_id": user_id})
         return user
+    
+    def save_analysis_result(self, user_id, analysis_result):
+        result = self.collection.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$push": {"historique": analysis_result}}
+        )
+        return result.modified_count > 0
+    
+    def get_historique(self, user_id):
+        user = self.collection.find_one({"_id": ObjectId(user_id)}, {"historique": 1})
+        if user and "historique" in user:
+            return user["historique"]
+        return []
+

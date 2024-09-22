@@ -59,13 +59,13 @@ class AuthController:
 
         if user:
             user_info = {
+                "id": str(user.get("_id")),
                 "nom": user.get("nom"),
                 "prenom": user.get("prenom"),
                 "age": user.get("age"),
                 "email": user.get("email"),
                 "adresse": user.get("adresse"),
                 "num_tel": user.get("num_tel"),
-                # Add more fields as needed
             }
             return jsonify({"status": True, "message": "Login successful", "user": user_info}), 200
 
