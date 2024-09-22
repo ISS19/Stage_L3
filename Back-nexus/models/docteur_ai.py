@@ -15,27 +15,53 @@ class AIModel:
         if len(symptoms) > 4:
             symptoms = symptoms[:4]
 
-        # Build query for diseases matching any of the symptoms
-        query = {"$or": [{"Symptom_1": {"$in": symptoms}},
-                         {"Symptom_2": {"$in": symptoms}},
-                         {"Symptom_3": {"$in": symptoms}},
-                         {"Symptom_4": {"$in": symptoms}}]}
+        # Build query based on the number of symptoms
+        if len(symptoms) == 4:
+            # Use $and if exactly 4 symptoms are provided
+            query = {
+                "$and": [
+                    {"Symptom_1": {"$in": symptoms}},
+                    {"Symptom_2": {"$in": symptoms}},
+                    {"Symptom_3": {"$in": symptoms}},
+                    {"Symptom_4": {"$in": symptoms}},
+                ]
+            }
+        elif len(symptoms) == 3:
+            # Use $and if exactly 3 symptoms are provided
+            query = {
+                "$and": [
+                    {"Symptom_1": {"$in": symptoms}},
+                    {"Symptom_2": {"$in": symptoms}},
+                    {"Symptom_3": {"$in": symptoms}},
+                ]
+            }
+        else:
+            # Use $or for less than 3 symptoms
+            query = {
+                "$or": [
+                    {"Symptom_1": {"$in": symptoms}},
+                    {"Symptom_2": {"$in": symptoms}},
+                    {"Symptom_3": {"$in": symptoms}},
+                    {"Symptom_4": {"$in": symptoms}},
+                ]
+            }
 
         diseases = self.db["symptoms_df"].find(query)
         
+        # Limit the results if only 3 symptoms were provided
+        if len(symptoms) == 3:
+            diseases = diseases.limit(2)
+
         # Collect the disease names
         disease_names = {doc["Disease"] for doc in diseases}
 
         # Translate disease names to French
-        translated_disease_names = {self.translate_text(name) for name in disease_names}
-
         disease_info = {}
         for disease_name in disease_names:
             description = self.db["description"].find_one({"Disease": disease_name})
             diets = self.db["diets"].find({"Disease": disease_name})
             medications = self.db["medications"].find({"Disease": disease_name})
             precautions = self.db["precautions_df"].find({"Disease": disease_name})
-            """ symptoms = self.db["symptoms_df"].find({"Disease": disease_name}) """
             workout = self.db["workout_df"].find({"Disease": disease_name})
 
             # Include translated disease name in the response
@@ -49,7 +75,7 @@ class AIModel:
                 "workout": [self.serialize_doc(doc) for doc in workout]
             }
 
-        return disease_info, 
+        return disease_info,
 
     def format_symptom(self, symptom):
         return f" {symptom.strip().replace(' ', '_').lower()}"
