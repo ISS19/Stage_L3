@@ -35,51 +35,92 @@ const Consulter = () => {
       setter(e.target.value);
     };
 
-    async function handleSendSymptoms() {
-      const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(Boolean) as string[];
-  
-      if (symptoms.length === 0) {
-          enqueueSnackbar("Entrez au moins un symptôme pour pouvoir vous examiner", {
-              variant: "warning",
-          });
-          return;
-      }
-  
-      setVoice(false);
-      setLoading(true);
-      setAnimationComplete(false);
-  
-      try {
-          const res = await AIService.getDiseasePrecaution(symptoms);
-          const fetchedPrecaution = res.data.data[0];
-  
-          const diseaseKeys = Object.keys(fetchedPrecaution);
-          const descriptions: { [key: string]: string } = {};
-  
-          if (diseaseKeys.length === 1) {
-              const firstDiseaseInfo = fetchedPrecaution[diseaseKeys[0]];
-              if (firstDiseaseInfo && firstDiseaseInfo.description) {
-                  descriptions[diseaseKeys[0]] = firstDiseaseInfo.description.Description;
-              }
-          } else {
-              for (let i = 0; i < Math.min(4, diseaseKeys.length); i++) {
-                  const diseaseKey = diseaseKeys[i];
-                  const diseaseInfo = fetchedPrecaution[diseaseKey];
-                  if (diseaseInfo && diseaseInfo.description) {
-                      descriptions[diseaseKey] = diseaseInfo.description.Description;
-                  }
-              }
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    console.log(`Current theme: ${theme}`);
+  }, [theme]);
+
+  async function handleSendSymptoms() {
+    const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(
+      Boolean
+    ) as string[];
+
+    if (symptoms.length === 0) {
+      enqueueSnackbar(
+        "Entrez au moins un symptôme pour pouvoir vous examiner",
+        { variant: "warning" }
+      );
+      return;
+    }
+
+    setVoice(false);
+    setLoading(true);
+    setAnimationComplete(false);
+
+    try {
+      const res = await AIService.getDiseasePrecaution(symptoms);
+      const fetchedPrecaution = res.data.data[0];
+
+      const diseaseKeys = Object.keys(fetchedPrecaution);
+      const descriptions: { [key: string]: string } = {};
+
+      if (diseaseKeys.length === 1) {
+        const firstDiseaseInfo = fetchedPrecaution[diseaseKeys[0]];
+        if (firstDiseaseInfo && firstDiseaseInfo.description) {
+          // Description de la maladie
+          descriptions[
+            diseaseKeys[0]
+          ] = `Description: ${firstDiseaseInfo.description.Description}`;
+
+          // Régimes alimentaires
+          if (firstDiseaseInfo.diets && firstDiseaseInfo.diets.length > 0) {
+            const diets = firstDiseaseInfo.diets.map((d) => d.Diet).join(", ");
+            descriptions[diseaseKeys[0]] += `\nRégimes recommandés: ${diets}`;
           }
 
-          setDiseaseDescriptions(descriptions);
-          setVoice(true);
-      } catch (error) {
-          console.error("Error fetching precautions:", error);
-      } finally {
-          setLoading(false);
+          if (
+            firstDiseaseInfo.medications &&
+            firstDiseaseInfo.medications.length > 0
+          ) {
+            const medications = firstDiseaseInfo.medications
+              .map((m) => m.Medication)
+              .join(", ");
+            descriptions[
+              diseaseKeys[0]
+            ] += `\nMédicaments recommandés: ${medications}`;
+          }
+
+          if (
+            firstDiseaseInfo.precautions &&
+            firstDiseaseInfo.precautions.length > 0
+          ) {
+            const precautions = firstDiseaseInfo.precautions
+              .map(
+                (p) =>
+                  `\n- ${p.Precaution_1}\n- ${p.Precaution_2}\n- ${p.Precaution_3}\n- ${p.Precaution_4}`
+              )
+              .join("\n");
+            descriptions[diseaseKeys[0]] += `\nPrécautions: ${precautions}`;
+          }
+        }
+      } else {
+        for (let i = 0; i < Math.min(4, diseaseKeys.length); i++) {
+          const diseaseKey = diseaseKeys[i];
+          const diseaseInfo = fetchedPrecaution[diseaseKey];
+          if (diseaseInfo && diseaseInfo.description) {
+            descriptions[diseaseKey] = diseaseInfo.description.Description;
+          }
+        }
       }
+
+      setDiseaseDescriptions(descriptions);
+      setVoice(true);
+    } catch (error) {
+      console.error("Error fetching precautions:", error);
+    } finally {
+      setLoading(false);
+    }
   }
-  
 
   useEffect(() => {
     if (diseaseDescriptions) {
@@ -142,7 +183,13 @@ const Consulter = () => {
             ) : (
               <div className={styles.preResponse}>
                 Les reponses du docteur s'afficheront ici <br />{" "}
-                <img src="/aid-logos.png" className={styles.logo} alt="" />
+                <img
+                  src={
+                    theme === "dark" ? "/aid-logos-dark.png" : "/aid-logos.png"
+                  }
+                  alt="Logo"
+                  className={styles.logo}
+                />
               </div>
             )}
           </div>

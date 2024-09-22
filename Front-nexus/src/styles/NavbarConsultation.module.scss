@@ -1,6 +1,28 @@
 @use "./variable.module.scss" as *;
 @use "./mixins" as *;
 
+[data-theme="dark"] {
+  @import "./variable-dark.module.scss";
+
+  .header {
+    background: $background;
+    color: $textColor;
+
+    .nav {
+      button {
+        color: white;
+      }
+    }
+
+    .deconexion {
+      button {
+        color: white;
+      }
+    }
+
+  }
+}
+
 .header {
   padding: 0.5rem 2rem;
   background-color: $background;

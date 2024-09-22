@@ -1,21 +1,26 @@
 import React, { useState, useEffect } from 'react';
 
-const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onComplete }) => {
-  const [displayedText, setDisplayedText] = useState('');
+interface TypewriterWithVoiceProps {
+  text: string;
+  rate?: number;
+  pitch?: number;
+  volume?: number;
+  onComplete?: () => void;
+}
+
+const TypewriterWithVoice: React.FC<TypewriterWithVoiceProps> = ({
+  text = "",
+  rate = 1,
+  pitch = 1,
+  volume = 1,
+  onComplete,
+}) => {
+  const [displayedText, setDisplayedText] = useState<string[]>([]);
   const [index, setIndex] = useState(0);
-  const [utterance, setUtterance] = useState(null);
+  const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null);
   const [speechStarted, setSpeechStarted] = useState(false);
 
-  const userSession = localStorage.getItem('user');
-
-  if (userSession) {
-    const userObject = JSON.parse(userSession);
-    const userName = userObject.name; 
-    console.log("Nom de l'utilisateur : ", userName);
-  } else {
-    console.log("Aucun utilisateur trouvé dans le localStorage.");
-  }
-
+  const titles = ["Description", "Régimes recommandés", "Médicaments recommandés", "Précautions"];
 
   useEffect(() => {
     const speech = new SpeechSynthesisUtterance();
@@ -39,16 +44,30 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onCom
 
     const timeout = setTimeout(() => {
       const nextChar = text[index];
-      setDisplayedText((prev) => prev + nextChar);
-      setIndex((prev) => prev + 1);
-    }, 62);
+      const isTitle = titles.some((title) => text.slice(index, index + title.length) === title);
+
+      if (isTitle) {
+        const matchedTitle = titles.find((title) => text.slice(index, index + title.length) === title)!;
+        setDisplayedText((prev) => [...prev, `<br /><strong>${matchedTitle}</strong>`]);
+        setIndex((prev) => prev + matchedTitle.length);
+      } else {
+        setDisplayedText((prev) => {
+          const lastEntry = prev[prev.length - 1];
+          if (typeof lastEntry === 'string') {
+            return [...prev.slice(0, -1), lastEntry + nextChar];
+          }
+          return [...prev, nextChar];
+        });
+        setIndex((prev) => prev + 1);
+      }
+    }, 78);
 
     if (index === text.length - 1 && onComplete) {
       onComplete();
     }
 
     return () => clearTimeout(timeout);
-  }, [text, index, displayedText, speechStarted, onComplete]);
+  }, [text, index, speechStarted, onComplete]);
 
   useEffect(() => {
     if (utterance && text) {
@@ -58,7 +77,9 @@ const TypewriterWithVoice = ({ text = "", rate = 1, pitch = 1, volume = 1, onCom
     }
   }, [utterance, text]);
 
-  return <div><span></span>{displayedText}</div>;
+  return (
+    <div dangerouslySetInnerHTML={{ __html: displayedText.join('') }}></div>
+  );
 };
 
 export default TypewriterWithVoice;

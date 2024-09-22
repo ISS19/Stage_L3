@@ -12,11 +12,11 @@
   .leftPanel,
   .rightPanel {
     background: #1b1c2a;
-    
+
     input {
       background-color: #2b2d42;
       color: #f1f1f1;
-      
+
       &:focus {
         border-color: $primaryColor;
         box-shadow: 0 0 5px rgba(123, 255, 255, 0.5);
@@ -26,7 +26,7 @@
     button {
       background-color: #2b2d42;
       color: #f1f1f1;
-      
+
       &:hover {
         background-color: $primaryColor;
         color: white;
@@ -41,10 +41,6 @@
   .AiResponse {
     background-color: #1b1c2a;
     color: #f1f1f1;
-  }
-
-  .logo {
-    filter: brightness(0) invert(1); // Inversion pour logo clair
   }
 }
 
@@ -87,13 +83,14 @@
     padding: 13px;
     font-size: 15px;
     border: none;
+    background-color: #f1f1f1;
     border-radius: 7px;
     box-sizing: border-box;
     transition: border-color 0.3s, box-shadow 0.3s;
 
     &:focus {
       border-color: $primaryColor;
-      box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+      box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
       outline: none;
     }
   }
@@ -115,16 +112,16 @@
     }
   }
 
-  .preResponse{
+  .preResponse {
     text-align: center;
     font-weight: bold;
     font-size: 20px;
   }
-  .AiResponse{
+  .AiResponse {
     overflow: auto;
     height: 60vh;
   }
-  .logo{
+  .logo {
     width: 250px;
   }
 
