@@ -12,7 +12,7 @@ import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }: AppProps) {
 
-  /* useVerifySession(); */
+  useVerifySession();
 
   const router = useRouter();
 
