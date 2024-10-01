@@ -254,7 +254,7 @@ function Consulter() {
               </div>
             )}
           </div>
-          <button onClick={handleDownload}>Download</button>
+          <button onClick={handleDownload}>Enregistrer</button>
         </div>
       </main>
     </div>
