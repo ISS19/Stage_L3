@@ -12,6 +12,14 @@ import { enqueueSnackbar } from "notistack";
 import { getUser } from "@/utils/helpers";
 import jsPDF from "jspdf";
 
+const symptomsList = [
+  "perte musculaire",
+  "plaques dans la gorge",
+  "forte fievre",
+  "contacts extraconjugaux",
+  "stomach pain",
+  "vomiting",
+];
 function Consulter() {
   const [voice, setVoice] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,6 +29,11 @@ function Consulter() {
   const [symptome2, setSymptome2] = useState<string | undefined>();
   const [symptome3, setSymptome3] = useState<string | undefined>();
   const [symptome4, setSymptome4] = useState<string | undefined>();
+
+  const [suggestions1, setSuggestions1] = useState<string[]>([]);
+  const [suggestions2, setSuggestions2] = useState<string[]>([]);
+  const [suggestions3, setSuggestions3] = useState<string[]>([]);
+  const [suggestions4, setSuggestions4] = useState<string[]>([]);
 
   const [diseaseDescriptions, setDiseaseDescriptions] = useState<{
     [key: string]: string;
@@ -33,10 +46,33 @@ function Consulter() {
     .join("\n");
 
   const handleSymptomeChange =
-    (setter: React.Dispatch<React.SetStateAction<string | undefined>>) =>
+    (
+      setter: React.Dispatch<React.SetStateAction<string | undefined>>,
+      setSuggestions: React.Dispatch<React.SetStateAction<string[]>>
+    ) =>
     (e: React.ChangeEvent<HTMLInputElement>) => {
-      setter(e.target.value);
+      const value = e.target.value;
+      setter(value);
+
+      // Update suggestions based on the current input value
+      if (value) {
+        const filteredSuggestions = symptomsList.filter((symptom) =>
+          symptom.toLowerCase().includes(value.toLowerCase())
+        );
+        setSuggestions(filteredSuggestions);
+      } else {
+        setSuggestions([]); // Clear suggestions if input is empty
+      }
     };
+
+  const handleSuggestionClick = (
+    symptom: string,
+    setter: React.Dispatch<React.SetStateAction<string | undefined>>,
+    setSuggestions: React.Dispatch<React.SetStateAction<string[]>>
+  ) => {
+    setter(symptom);
+    setSuggestions([]); // Clear suggestions after selection
+  };
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -91,6 +127,31 @@ function Consulter() {
         verticalOffset += 5;
       });
 
+      doc.setFont("helvetica", "bold");
+      doc.text("Symptômes:", 10, verticalOffset);
+      verticalOffset += 10;
+
+      doc.setFont("helvetica", "normal");
+      const symptoms = [symptome1, symptome2, symptome3, symptome4].filter(
+        Boolean
+      ) as string[];
+
+      if (symptoms.length > 0) {
+        const symptomLines = symptoms.map((symptom) => `- ${symptom}`);
+        const symptomText = doc.splitTextToSize(
+          symptomLines.join("\n"),
+          maxWidth
+        );
+
+        symptomText.forEach((line: string) => {
+          doc.text(line, 10, verticalOffset);
+          verticalOffset += 10;
+        });
+      } else {
+        doc.text("Aucun symptôme fourni.", 10, verticalOffset);
+        verticalOffset += 10;
+      }
+
       doc.save("precautions.pdf");
     };
   }
@@ -128,7 +189,9 @@ function Consulter() {
           ] = `Description: ${firstDiseaseInfo.description.Description}`;
 
           if (firstDiseaseInfo.diets && firstDiseaseInfo.diets.length > 0) {
-            const diets = firstDiseaseInfo.diets.map((d: any) => d.Diet).join(", ");
+            const diets = firstDiseaseInfo.diets
+              .map((d: any) => d.Diet)
+              .join(", ");
             descriptions[diseaseKeys[0]] += `\nRégimes recommandés: ${diets}`;
           }
 
@@ -199,26 +262,83 @@ function Consulter() {
             type="text"
             placeholder="Symptom 1"
             value={symptome1}
-            onChange={handleSymptomeChange(setSymptome1)}
+            onChange={handleSymptomeChange(setSymptome1, setSuggestions1)}
           />
+          {suggestions1.length > 0 && (
+            <ul className={styles.suggestions}>
+              {suggestions1.map((suggestion) => (
+                <li
+                  key={suggestion}
+                  onClick={() =>
+                    handleSuggestionClick(suggestion, setSymptome1, setSuggestions1)
+                  }
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
+
           <input
             type="text"
             placeholder="Symptom 2"
             value={symptome2}
-            onChange={handleSymptomeChange(setSymptome2)}
+            onChange={handleSymptomeChange(setSymptome2, setSuggestions2)}
           />
+          {suggestions2.length > 0 && (
+            <ul className={styles.suggestions}>
+              {suggestions2.map((suggestion) => (
+                <li
+                  key={suggestion}
+                  onClick={() =>
+                    handleSuggestionClick(suggestion, setSymptome2, setSuggestions2)
+                  }
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
           <input
             type="text"
             placeholder="Symptom 3"
             value={symptome3}
-            onChange={handleSymptomeChange(setSymptome3)}
+            onChange={handleSymptomeChange(setSymptome3, setSuggestions3)}
           />
+          {suggestions3.length > 0 && (
+            <ul className={styles.suggestions}>
+              {suggestions3.map((suggestion) => (
+                <li
+                  key={suggestion}
+                  onClick={() =>
+                    handleSuggestionClick(suggestion, setSymptome3, setSuggestions3)
+                  }
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
           <input
             type="text"
             placeholder="Symptom 4"
             value={symptome4}
-            onChange={handleSymptomeChange(setSymptome4)}
+            onChange={handleSymptomeChange(setSymptome4, setSuggestions4)}
           />
+          {suggestions4.length > 0 && (
+            <ul className={styles.suggestions}>
+              {suggestions4.map((suggestion) => (
+                <li
+                  key={suggestion}
+                  onClick={() =>
+                    handleSuggestionClick(suggestion, setSymptome4, setSuggestions4)
+                  }
+                >
+                  {suggestion}
+                </li>
+              ))}
+            </ul>
+          )}
           <button onClick={handleSendSymptoms} disabled={loading}>
             {loading ? <div className={styles.spinner}></div> : "Examiner"}
           </button>

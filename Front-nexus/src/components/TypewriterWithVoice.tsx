@@ -60,7 +60,7 @@ const TypewriterWithVoice: React.FC<TypewriterWithVoiceProps> = ({
         });
         setIndex((prev) => prev + 1);
       }
-    }, 78);
+    }, 74);
 
     if (index === text.length - 1 && onComplete) {
       onComplete();
